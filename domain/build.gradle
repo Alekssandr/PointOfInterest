@@ -1,0 +1,9 @@
+apply plugin: 'kotlin'
+
+dependencies {
+    implementation domainDependencies.kotlin
+    implementation domainDependencies.rxKotlin
+
+    testImplementation testDependencies.jUnit
+    testImplementation testDependencies.mockitoKotlin
+}
