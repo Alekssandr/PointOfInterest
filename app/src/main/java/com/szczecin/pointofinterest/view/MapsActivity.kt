@@ -1,4 +1,4 @@
-package com.szczecin.pointofinterest
+package com.szczecin.pointofinterest.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,14 +9,25 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.szczecin.pointofinterest.R
+import com.szczecin.pointofinterest.common.lifecircle.extensions.observeLifecycleIn
+import com.szczecin.pointofinterest.viewmodel.GeoSearchViewModel
+import dagger.android.AndroidInjection
+import javax.inject.Inject
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
 
+    @Inject
+    lateinit var mainViewModel: GeoSearchViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
+        observeLifecycleIn(mainViewModel)
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment

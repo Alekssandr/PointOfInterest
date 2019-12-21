@@ -16,17 +16,36 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        resValue "string", "google_maps_key",
-                (project.findProperty("GOOGLE_MAPS_API_KEY") ?: "")
+
     }
     compileOptions {
         sourceCompatibility 1.8
         targetCompatibility 1.8
     }
+
+    signingConfigs {
+        release {
+            storeFile file("keys")
+            storePassword project.findProperty('store_password')
+            keyAlias project.findProperty('key_alias')
+            keyPassword project.findProperty('key_password')
+        }
+    }
+
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            resValue "string", "google_maps_key",
+                    (project.findProperty("GOOGLE_MAPS_RELEASE_API_KEY") ?: "")
+            buildConfigField 'String', 'API_URL', "\"https://en.wikipedia.org/w/api.php?\""
+        }
+        debug {
+            minifyEnabled false
+            resValue "string", "google_maps_key",
+                    (project.findProperty("GOOGLE_MAPS_DEBUG_API_KEY") ?: "")
+            buildConfigField 'String', 'API_URL', "\"https://en.wikipedia.org/w/api.php?\""
         }
     }
 
