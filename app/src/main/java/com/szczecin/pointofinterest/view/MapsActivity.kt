@@ -1,24 +1,17 @@
 package com.szczecin.pointofinterest.view
 
-import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.AttributeSet
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.szczecin.pointofinterest.BuildConfig
 import com.szczecin.pointofinterest.R
 import com.szczecin.pointofinterest.common.ViewModelFactory
 import com.szczecin.pointofinterest.common.lifecircle.extensions.observeLifecycleIn
@@ -67,7 +60,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapsPoint {
         crossinline f: () -> F
     ): Lazy<VM> =
         lazy { ViewModelProviders.of(this, f.invoke()).get(VM::class.java) }
-
 
     /**
      * Manipulates the map once available.

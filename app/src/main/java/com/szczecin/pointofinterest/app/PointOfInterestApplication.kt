@@ -12,7 +12,6 @@ class PointOfInterestApplication : Application(), HasActivityInjector {
     @Inject
     lateinit var activityInjector: DispatchingAndroidInjector<Activity>
 
-
     override fun onCreate() {
         super.onCreate()
         daggerInit()

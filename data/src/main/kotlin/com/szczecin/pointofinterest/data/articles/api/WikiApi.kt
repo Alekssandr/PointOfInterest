@@ -10,7 +10,7 @@ interface WikiApi {
     fun fetchArticles(
         @Query("list") list: String,
         @Query("gsradius") gsradius: String,
-        @Query("gscoord",encoded = true) gscoord: String,
+        @Query("gscoord", encoded = true) gscoord: String,
         @Query("gslimit") gslimit: String,
         @Query("format") format: String
     ): Single<GeoSearchMain>

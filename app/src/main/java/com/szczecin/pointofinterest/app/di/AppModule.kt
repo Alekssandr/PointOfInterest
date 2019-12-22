@@ -35,5 +35,4 @@ class AppModule {
     fun provideCommonApiRetrofit(
         networkProvider: NetworkProvider
     ): Retrofit = networkProvider.provideCommonApiRetrofit()
-
 }

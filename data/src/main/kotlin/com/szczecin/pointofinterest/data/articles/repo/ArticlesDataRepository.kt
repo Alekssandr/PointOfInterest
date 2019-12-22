@@ -4,7 +4,6 @@ import com.szczecin.pointofinterest.articles.repo.ArticlesRepository
 import com.szczecin.pointofinterest.data.articles.api.WikiApi
 import com.szczecin.pointofinterest.entities.GeoSearchMain
 import io.reactivex.Single
-import java.net.URLEncoder
 
 class ArticlesDataRepository(private val api: WikiApi) : ArticlesRepository {
     companion object {
@@ -14,7 +13,8 @@ class ArticlesDataRepository(private val api: WikiApi) : ArticlesRepository {
         const val GSLIMIT = "50"
         const val FORMAT = "json"
     }
+
     override fun fetchArticles(): Single<GeoSearchMain> {
-        return api.fetchArticles(LIST,GSRADIUS, GSCOORD, GSLIMIT, FORMAT)
+        return api.fetchArticles(LIST, GSRADIUS, GSCOORD, GSLIMIT, FORMAT)
     }
 }

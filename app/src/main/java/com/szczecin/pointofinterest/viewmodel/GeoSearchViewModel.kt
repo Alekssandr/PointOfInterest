@@ -20,7 +20,7 @@ interface MapsPoint {
 class GeoSearchViewModel @Inject constructor(
     private val nearbyArticlesUseCase: GetNearbyArticlesUseCase,
     private val schedulers: RxSchedulers
-    ) : ViewModel(), LifecycleObserver {
+) : ViewModel(), LifecycleObserver {
 
     private val disposables = CompositeDisposable()
     private lateinit var mapsPoint: MapsPoint
@@ -31,7 +31,7 @@ class GeoSearchViewModel @Inject constructor(
     }
 
     private fun loadGeoPages() {
-        disposables +=  nearbyArticlesUseCase
+        disposables += nearbyArticlesUseCase
             .execute()
             .subscribeOn(schedulers.io())
             .observeOn(schedulers.mainThread())
