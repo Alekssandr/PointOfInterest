@@ -25,7 +25,7 @@ android {
 
     signingConfigs {
         release {
-            storeFile file("keys")
+            storeFile file(project.findProperty('keys'))
             storePassword project.findProperty('store_password')
             keyAlias project.findProperty('key_alias')
             keyPassword project.findProperty('key_password')
@@ -39,13 +39,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             resValue "string", "google_maps_key",
                     (project.findProperty("GOOGLE_MAPS_RELEASE_API_KEY") ?: "")
-            buildConfigField 'String', 'API_URL', "\"https://en.wikipedia.org/w/api.php?\""
+            buildConfigField 'String', 'API_URL', "\"https://en.wikipedia.org/w/\""
         }
         debug {
             minifyEnabled false
             resValue "string", "google_maps_key",
                     (project.findProperty("GOOGLE_MAPS_DEBUG_API_KEY") ?: "")
-            buildConfigField 'String', 'API_URL', "\"https://en.wikipedia.org/w/api.php?\""
+            buildConfigField 'String', 'API_URL', "\"https://en.wikipedia.org/w/\""
         }
     }
 

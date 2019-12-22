@@ -6,12 +6,12 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface WikiApi {
-    @GET("action=query")
+    @GET("api.php?action=query")
     fun fetchArticles(
         @Query("list") list: String,
         @Query("gsradius") gsradius: String,
-        @Query("gscoord") gscoord: String,
+        @Query("gscoord",encoded = true) gscoord: String,
         @Query("gslimit") gslimit: String,
         @Query("format") format: String
-    ): Single<List<GeoSearchMain>>
+    ): Single<GeoSearchMain>
 }

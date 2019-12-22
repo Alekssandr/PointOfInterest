@@ -8,6 +8,6 @@ data class Article (
 	@SerializedName("title") val title : String,
 	@SerializedName("lat") val lat : Double,
 	@SerializedName("lon") val lon : Double,
-	@SerializedName("dist") val dist : Int,
+	@SerializedName("dist") val dist : Double,
 	@SerializedName("primary") val primary : String
 )
