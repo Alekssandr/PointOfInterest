@@ -1,4 +1,4 @@
-package com.szczecin.pointofinterest.entities
+package com.szczecin.pointofinterest.entities.marker
 
 import com.google.gson.annotations.SerializedName
 

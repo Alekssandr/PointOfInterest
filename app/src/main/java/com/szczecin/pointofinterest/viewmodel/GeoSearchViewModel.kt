@@ -7,7 +7,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ViewModel
 import com.szczecin.pointofinterest.articles.usecase.GetNearbyArticlesUseCase
 import com.szczecin.pointofinterest.common.rx.RxSchedulers
-import com.szczecin.pointofinterest.entities.Article
+import com.szczecin.pointofinterest.entities.marker.Article
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy

@@ -6,11 +6,10 @@ import retrofit2.Retrofit
 
 class NetworkProvider(private val url: String) {
 
-    fun provideCommonApiRetrofit(): Retrofit = provideRetrofit(url,
+    fun provideCommonApiRetrofit(): Retrofit = provideRetrofit(
+        url,
         provideOkHttpClient()
     )
-
-//    fun provideUserAuthorizationApiRetrofit(): Retrofit = provideRetrofit(provideOkHttpClient())
 
     private fun provideOkHttpClient(): OkHttpClient =
         OkHttpClient.Builder()

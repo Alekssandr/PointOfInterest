@@ -63,7 +63,8 @@ dependencies {
     implementation appDependencies.daggerAndroid
     implementation appDependencies.glide
     implementation appDependencies.livedataext
-
+    implementation "androidx.coordinatorlayout:coordinatorlayout:1.1.0"
+    implementation 'com.github.corouteam:GlideToVectorYou:v2.0.0'
     kapt appDependencies.daggerCompiler
     kapt appDependencies.daggerAndroidProcessor
     kapt appDependencies.glideCompiler
