@@ -7,6 +7,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -16,6 +17,7 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.szczecin.pointofinterest.R
+import com.szczecin.pointofinterest.adapter.ImageItemsAdapter
 import com.szczecin.pointofinterest.common.ViewModelFactory
 import com.szczecin.pointofinterest.common.lifecircle.extensions.observeLifecyclesIn
 import com.szczecin.pointofinterest.databinding.ActivityMapsBinding
@@ -63,6 +65,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapsPoint,
         sheetBehavior = BottomSheetBehavior.from<NestedScrollView>(bottom_sheet)
         sheetBehavior.isHideable = true
         sheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        initRecycler()
 //        /**
 //         * bottom sheet state change listener
 //         * we are changing button text when sheet changed state
@@ -119,6 +122,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapsPoint,
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        mMap.isMyLocationEnabled = true
 
         val sydney = LatLng(60.181666666666665, 24.929722222222225)
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
@@ -132,12 +136,32 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapsPoint,
         binding.run {
             markerDescriptionViewModel.apply {
                 pageId.value = p0?.tag as String
+
             }
             lifecycleOwner = this@MapsActivity
         }
 
         expandCloseSheet()
         return true
+    }
+
+    private fun initRecycler() {
+
+        val recyclerImages = binding.bottomSheet.recyclerImages
+//        recyclerImages.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+//        recyclerImages.hasFixedSize()
+//        recyclerImages.adapter = ImageItemsAdapter()
+
+        recyclerImages.apply {
+            this.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            this.adapter = ImageItemsAdapter()
+        }
+//        recyclerMovies.addItemDecoration(
+//            androidx.recyclerview.widget.DividerItemDecoration(
+//                this,
+//                layoutManager.orientation
+//            )
+//        )
     }
 
     private inline fun <reified VM : ViewModel, F : ViewModelProvider.Factory> AppCompatActivity.viewModel(

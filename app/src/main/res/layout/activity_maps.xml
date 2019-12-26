@@ -24,12 +24,14 @@
             android:layout_height="match_parent"
             tools:context=".view.MapsActivity" />
 
+
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".MainActivity">
 
             <include
+                android:id="@+id/bottom_sheet"
                 layout="@layout/bottom_sheet"
                 binding:viewModelMarkerDetails="@{viewModelMarkerDetails}" />
         </androidx.coordinatorlayout.widget.CoordinatorLayout>

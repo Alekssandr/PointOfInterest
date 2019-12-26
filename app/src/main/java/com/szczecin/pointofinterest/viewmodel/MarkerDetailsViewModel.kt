@@ -1,7 +1,11 @@
 package com.szczecin.pointofinterest.viewmodel
 
+import android.text.Html
+import android.text.method.LinkMovementMethod
 import android.util.Log
+import androidx.core.text.HtmlCompat
 import androidx.lifecycle.*
+import com.szczecin.pointofinterest.BuildConfig
 import com.szczecin.pointofinterest.articles.usecase.GetImageUseCase
 import com.szczecin.pointofinterest.articles.usecase.GetMarkerDetailsUseCase
 import com.szczecin.pointofinterest.common.rx.RxSchedulers
@@ -21,13 +25,18 @@ class MarkerDetailsViewModel @Inject constructor(
     val pageId = MutableLiveData<String>()
     val title = MutableLiveData<String>()
     val description = MutableLiveData<String>()
-    val image = MutableLiveData<String>()
+    val imageList = MutableLiveData<List<String>>()
+    val link = MutableLiveData<String>()
+    val imageArrayList = ArrayList<String>()
+
+//    val image = MutableLiveData<String>()
     private var imagesTitles: String = ""
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     fun onCreate() {
         pageId.observeForever {
             it?.let { pageId ->
+                imageArrayList.clear()
                 loadMarkerDescription(pageId)
             }
         }
@@ -39,19 +48,18 @@ class MarkerDetailsViewModel @Inject constructor(
             .subscribeOn(schedulers.io())
             .observeOn(schedulers.mainThread())
             .subscribeBy(onSuccess = {
-                for ((key, value) in it.query.pages) {
+                for ((_, value) in it.query.pages) {
                     title.value = value.title
                     description.value = value.description
+                    val url = BuildConfig.API_ARTICLE_URL + value.title.replace(" ", "_")
+                    link.value  = url
                     value.images.forEach { images ->
                         imagesTitles = imagesTitles.plus(images.title + "|")
                     }
                     imagesTitles = imagesTitles.substring(0, imagesTitles.length - 1)
-//                    value.images.forEach(
-////                        imagesTitles.append(imageTitle.)
-//                    )
+
                     loadImages(imagesTitles)
                     imagesTitles = ""
-//                    image.value = value.images[0].title
                 }
                 Log.d("test", it.query.toString())
             }, onError = {
@@ -66,9 +74,9 @@ class MarkerDetailsViewModel @Inject constructor(
             .observeOn(schedulers.mainThread())
             .subscribeBy(onSuccess = {
                 for ((_, value) in it.query.pages) {
-                    image.value = value.imageInfo[0].thumburl
-                    break
+                    imageArrayList.add(value.imageInfo[0].thumburl)
                 }
+                imageList.value = imageArrayList
 //                Log.d("test", image.value.toString())
             }, onError = {
                 Log.d("test", it.message ?: "")

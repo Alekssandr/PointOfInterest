@@ -1,5 +1,5 @@
 <resources>
     <string name="title_activity_maps">Map</string>
     <string name="app_name">Point of Interest</string>
-
+    <string name="image">image</string>
 </resources>

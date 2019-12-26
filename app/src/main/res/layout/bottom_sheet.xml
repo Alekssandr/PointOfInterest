@@ -47,20 +47,27 @@
                 android:textColor="@android:color/black"
                 tools:text="Töölö Sports Hall dsdsv dsdssdfds\n dd  ddddddddd d    sd sd dsddsdsddssd sd ds ds dsdsds dssd  dsdsdsdsdsds" />
 
-            <ImageView
-                android:layout_width="200dp"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_images"
+                android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:layout_gravity="start"
-                android:layout_margin="20dp"
-                android:scaleType="centerCrop"
-                app:imgUrl="@{viewModelMarkerDetails.image}"
-                app:srcCompat="@mipmap/ic_launcher" />
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                app:imageList="@{viewModelMarkerDetails.imageList}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:listitem="@layout/image_item_view" />
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/link"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="3" />
+                android:layout_marginStart="20dp"
+                app:wikiLink="@{viewModelMarkerDetails.link}"
+                android:textSize="16sp"/>
 
             <TextView
                 android:id="@+id/textView4"
