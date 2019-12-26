@@ -1,5 +1,7 @@
 package com.szczecin.pointofinterest.di
 
+import android.content.Context
+import com.szczecin.pointofinterest.R
 import com.szczecin.pointofinterest.app.di.scopes.PerActivity
 import com.szczecin.pointofinterest.articles.repo.ArticlesRepository
 import com.szczecin.pointofinterest.articles.repo.ImageRepository
@@ -8,6 +10,9 @@ import com.szczecin.pointofinterest.data.articles.api.WikiApi
 import com.szczecin.pointofinterest.data.articles.repo.ArticlesDataRepository
 import com.szczecin.pointofinterest.data.articles.repo.ImageDataRepository
 import com.szczecin.pointofinterest.data.articles.repo.MarkerDetailsDataRepository
+import com.szczecin.pointofinterest.data.route.api.GoogleDirectionsApi
+import com.szczecin.pointofinterest.data.route.repo.RouteDataRepository
+import com.szczecin.pointofinterest.route.RouteRepository
 import dagger.Module
 import dagger.Provides
 
@@ -28,4 +33,9 @@ class MapsActivityModule {
     @PerActivity
     fun provideImageRepository(wikiApi: WikiApi): ImageRepository =
         ImageDataRepository(wikiApi)
+
+    @Provides
+    @PerActivity
+    fun provideRouteRepository(googleDirectionsApi: GoogleDirectionsApi, context: Context): RouteRepository =
+        RouteDataRepository(googleDirectionsApi, context.getString(R.string.google_maps_key))
 }

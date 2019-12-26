@@ -4,9 +4,9 @@ import com.szczecin.pointofinterest.data.network.RetrofitProvider.provideRetrofi
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 
-class NetworkProvider(private val url: String) {
+class NetworkProvider {
 
-    fun provideCommonApiRetrofit(): Retrofit = provideRetrofit(
+    fun provideCommonApiRetrofit(url: String): Retrofit = provideRetrofit(
         url,
         provideOkHttpClient()
     )

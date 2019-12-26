@@ -1,9 +1,6 @@
 package com.szczecin.pointofinterest.viewmodel
 
-import android.text.Html
-import android.text.method.LinkMovementMethod
 import android.util.Log
-import androidx.core.text.HtmlCompat
 import androidx.lifecycle.*
 import com.szczecin.pointofinterest.BuildConfig
 import com.szczecin.pointofinterest.articles.usecase.GetImageUseCase
@@ -17,19 +14,18 @@ import javax.inject.Inject
 class MarkerDetailsViewModel @Inject constructor(
     private val markerDetailsUseCase: GetMarkerDetailsUseCase,
     private val imageUseCase: GetImageUseCase,
-
     private val schedulers: RxSchedulers
 ) : ViewModel(), LifecycleObserver {
 
     private val disposables = CompositeDisposable()
     val pageId = MutableLiveData<String>()
+    val markerLocation = MutableLiveData<String>()
     val title = MutableLiveData<String>()
     val description = MutableLiveData<String>()
     val imageList = MutableLiveData<List<String>>()
     val link = MutableLiveData<String>()
     val imageArrayList = ArrayList<String>()
 
-//    val image = MutableLiveData<String>()
     private var imagesTitles: String = ""
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
@@ -52,7 +48,7 @@ class MarkerDetailsViewModel @Inject constructor(
                     title.value = value.title
                     description.value = value.description
                     val url = BuildConfig.API_ARTICLE_URL + value.title.replace(" ", "_")
-                    link.value  = url
+                    link.value = url
                     value.images.forEach { images ->
                         imagesTitles = imagesTitles.plus(images.title + "|")
                     }
@@ -77,7 +73,6 @@ class MarkerDetailsViewModel @Inject constructor(
                     imageArrayList.add(value.imageInfo[0].thumburl)
                 }
                 imageList.value = imageArrayList
-//                Log.d("test", image.value.toString())
             }, onError = {
                 Log.d("test", it.message ?: "")
             })

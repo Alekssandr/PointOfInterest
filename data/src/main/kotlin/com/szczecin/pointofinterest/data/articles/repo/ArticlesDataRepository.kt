@@ -9,12 +9,13 @@ class ArticlesDataRepository(private val api: WikiApi) : ArticlesRepository {
     companion object {
         const val LIST = "geosearch"
         const val GSRADIUS = "10000"
-        const val GSCOORD = "60.1831906%7C24.9285439"
+//        const val GSCOORD = "60.1831906%7C24.9285439"
+        const val GSCOORD = "37.4219983|-122.084"
         const val GSLIMIT = "50"
         const val FORMAT = "json"
     }
 
-    override fun fetchArticles(): Single<GeoSearchMain> {
-        return api.fetchArticles(LIST, GSRADIUS, GSCOORD, GSLIMIT, FORMAT)
+    override fun fetchArticles(locationToWiki: String): Single<GeoSearchMain> {
+        return api.fetchArticles(LIST, GSRADIUS, locationToWiki, GSLIMIT, FORMAT)
     }
 }

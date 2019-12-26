@@ -30,12 +30,17 @@ android {
             resValue "string", "google_maps_key",
                     (project.findProperty("GOOGLE_MAPS_RELEASE_API_KEY") ?: "")
             buildConfigField 'String', 'API_URL', "\"https://en.wikipedia.org/w/\""
+            buildConfigField 'String', 'API_ARTICLE_URL', "\"https://en.wikipedia.org/wiki/\""
+            buildConfigField 'String', 'API_ROUTE_URL', "\"https://maps.googleapis.com/maps/api/\""
+
         }
         debug {
             minifyEnabled false
             resValue "string", "google_maps_key",
                     (project.findProperty("GOOGLE_MAPS_DEBUG_API_KEY") ?: "")
             buildConfigField 'String', 'API_URL', "\"https://en.wikipedia.org/w/\""
+            buildConfigField 'String', 'API_ARTICLE_URL', "\"https://en.wikipedia.org/wiki/\""
+            buildConfigField 'String', 'API_ROUTE_URL', "\"https://maps.googleapis.com/maps/api/\""
         }
     }
 
@@ -65,6 +70,8 @@ dependencies {
     implementation appDependencies.livedataext
     implementation "androidx.coordinatorlayout:coordinatorlayout:1.1.0"
     implementation 'com.github.corouteam:GlideToVectorYou:v2.0.0'
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
+    implementation 'com.google.maps.android:android-maps-utils:0.5'
     kapt appDependencies.daggerCompiler
     kapt appDependencies.daggerAndroidProcessor
     kapt appDependencies.glideCompiler

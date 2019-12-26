@@ -8,6 +8,6 @@ import javax.inject.Inject
 class GetNearbyArticlesUseCase @Inject constructor(
     private val articlesRepository: ArticlesRepository
 ) {
-    fun execute(): Single<GeoSearchMain> =
-        articlesRepository.fetchArticles()
+    fun execute(locationToWiki: String): Single<GeoSearchMain> =
+        articlesRepository.fetchArticles(locationToWiki)
 }

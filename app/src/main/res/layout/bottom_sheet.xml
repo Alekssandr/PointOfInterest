@@ -8,6 +8,10 @@
         <variable
             name="viewModelMarkerDetails"
             type="com.szczecin.pointofinterest.viewmodel.MarkerDetailsViewModel" />
+
+        <variable
+            name="viewModelGeoSearch"
+            type="com.szczecin.pointofinterest.viewmodel.GeoSearchViewModel" />
     </data>
 
 
@@ -70,10 +74,13 @@
                 android:textSize="16sp"/>
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/direction"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="4" />
+                android:textSize="16sp"
+                android:layout_marginStart="20dp"
+                android:text="Get there"
+                android:onClick="@{()->viewModelGeoSearch.loadDirections(viewModelGeoSearch.locationCoordinateForDirections, viewModelMarkerDetails.markerLocation)}" />
 
             <TextView
                 android:id="@+id/textView5"

@@ -4,5 +4,5 @@ import com.szczecin.pointofinterest.entities.marker.GeoSearchMain
 import io.reactivex.Single
 
 interface ArticlesRepository {
-    fun fetchArticles(): Single<GeoSearchMain>
+    fun fetchArticles(locationToWiki: String): Single<GeoSearchMain>
 }
