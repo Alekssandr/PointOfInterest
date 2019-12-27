@@ -15,5 +15,3 @@ data class StepsRoute(
     var travelMode: String = "",
     var htmlInstructions: String = ""
 )
-
-

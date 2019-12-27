@@ -6,7 +6,6 @@ import com.szczecin.pointofinterest.BuildConfig
 import com.szczecin.pointofinterest.articles.usecase.GetImageUseCase
 import com.szczecin.pointofinterest.articles.usecase.GetMarkerDetailsUseCase
 import com.szczecin.pointofinterest.common.rx.RxSchedulers
-import com.szczecin.pointofinterest.entities.markerDetails.Images
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy

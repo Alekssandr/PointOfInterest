@@ -71,5 +71,3 @@ fun MarkerDetailsMain.toMarkerDetails(): MarkerDetails {
         }
     )
 }
-
-

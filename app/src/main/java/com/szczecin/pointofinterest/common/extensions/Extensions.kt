@@ -1,4 +1,4 @@
-package com.szczecin.pointofinterest.extensions
+package com.szczecin.pointofinterest.common.extensions
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel

@@ -3,9 +3,7 @@ package com.szczecin.pointofinterest.data.articles.repo
 import com.szczecin.pointofinterest.articles.model.MarkerDetails
 import com.szczecin.pointofinterest.articles.repo.MarkerDetailsRepository
 import com.szczecin.pointofinterest.data.articles.api.WikiApi
-import com.szczecin.pointofinterest.data.mapper.toArticleImages
 import com.szczecin.pointofinterest.data.mapper.toMarkerDetails
-import com.szczecin.pointofinterest.entities.markerDetails.MarkerDetailsMain
 import io.reactivex.Single
 
 class MarkerDetailsDataRepository(private val api: WikiApi) : MarkerDetailsRepository {

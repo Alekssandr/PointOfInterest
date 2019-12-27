@@ -31,9 +31,9 @@ import com.szczecin.pointofinterest.adapter.ImageItemsAdapter
 import com.szczecin.pointofinterest.adapter.StepItemsAdapter
 import com.szczecin.pointofinterest.articles.model.GeoSearchPages
 import com.szczecin.pointofinterest.common.ViewModelFactory
-import com.szczecin.pointofinterest.common.lifecircle.extensions.observeLifecyclesIn
+import com.szczecin.pointofinterest.common.extensions.lifecircle.observeLifecyclesIn
 import com.szczecin.pointofinterest.databinding.ActivityMapsBinding
-import com.szczecin.pointofinterest.extensions.viewModel
+import com.szczecin.pointofinterest.common.extensions.viewModel
 import com.szczecin.pointofinterest.route.model.Route
 import com.szczecin.pointofinterest.utils.MapsFactory
 import com.szczecin.pointofinterest.utils.MarkerTag

@@ -2,7 +2,6 @@ package com.szczecin.pointofinterest.articles.usecase
 
 import com.szczecin.pointofinterest.articles.model.GeoSearchArticle
 import com.szczecin.pointofinterest.articles.repo.ArticlesRepository
-import com.szczecin.pointofinterest.entities.marker.GeoSearchMain
 import io.reactivex.Single
 import javax.inject.Inject
 

@@ -1,6 +1,6 @@
 package com.szczecin.pointofinterest.articles.model
 
-data class GeoSearchArticle (
+data class GeoSearchArticle(
     val geoSearchPages: List<GeoSearchPages>
 )
 
@@ -11,6 +11,3 @@ data class GeoSearchPages(
     var lon: Double = 0.0,
     var dist: Double = 0.0
 )
-
-
-

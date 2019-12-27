@@ -1,4 +1,4 @@
-package com.szczecin.pointofinterest.common.lifecircle.extensions
+package com.szczecin.pointofinterest.common.extensions.lifecircle
 
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
