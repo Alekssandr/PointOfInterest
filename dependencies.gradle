@@ -24,8 +24,9 @@ ext {
     retrofitVersion = '2.5.0'
     okHttpVersion = '3.12.0'
     moshiVersion = '1.6.0'
+    coordinatorlayout = '1.1.0'
 
-    googlePlayServicesVersion = '16.0.0'
+    googlePlayServicesVersion = '17.0.0'
     glideVersion = '4.8.0'
     androidKtxVersion = '1.0.0'
     daggerVersion = '2.16'
@@ -60,6 +61,8 @@ ext {
             livedataext:                "com.snakydesign.livedataextensions:lives:${livedataextVersion}",
             googleMaps:                 "com.google.android.gms:play-services-maps:${googlePlayServicesVersion}",
             googleMapsUtils:            "com.google.maps.android:android-maps-utils:${googleMapsUtilsVersion}",
+            coordinatorlayout:          "androidx.coordinatorlayout:coordinatorlayout:${coordinatorlayout}",
+            googleLocation:             "com.google.android.gms:play-services-location:${googlePlayServicesVersion}"
     ]
 
     domainDependencies = [
@@ -79,7 +82,6 @@ ext {
             retrofitConverter:          "com.squareup.retrofit2:converter-gson:${retrofitVersion}",
             retrofitAdapter:            "com.squareup.retrofit2:adapter-rxjava2:${retrofitVersion}",
             moshi:                      "com.squareup.moshi:moshi-kotlin:${moshiVersion}",
-            googleLocation:             "com.google.android.gms:play-services-location:${googlePlayServicesVersion}"
     ]
 
     testDependencies = [

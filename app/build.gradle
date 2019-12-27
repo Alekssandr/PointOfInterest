@@ -68,10 +68,8 @@ dependencies {
     implementation appDependencies.daggerAndroid
     implementation appDependencies.glide
     implementation appDependencies.livedataext
-    implementation "androidx.coordinatorlayout:coordinatorlayout:1.1.0"
-    implementation 'com.github.corouteam:GlideToVectorYou:v2.0.0'
-    implementation 'com.google.android.gms:play-services-location:17.0.0'
-    implementation 'com.google.maps.android:android-maps-utils:0.5'
+    implementation appDependencies.googleLocation
+    implementation appDependencies.coordinatorlayout
     kapt appDependencies.daggerCompiler
     kapt appDependencies.daggerAndroidProcessor
     kapt appDependencies.glideCompiler

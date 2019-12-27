@@ -1,6 +1,7 @@
 package com.szczecin.pointofinterest.di
 
 import android.content.Context
+import android.text.Html
 import com.szczecin.pointofinterest.R
 import com.szczecin.pointofinterest.app.di.scopes.PerActivity
 import com.szczecin.pointofinterest.articles.repo.ArticlesRepository

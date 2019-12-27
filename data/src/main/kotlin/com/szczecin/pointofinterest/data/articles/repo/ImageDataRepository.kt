@@ -1,8 +1,9 @@
 package com.szczecin.pointofinterest.data.articles.repo
 
+import com.szczecin.pointofinterest.articles.model.ArticleImages
 import com.szczecin.pointofinterest.articles.repo.ImageRepository
 import com.szczecin.pointofinterest.data.articles.api.WikiApi
-import com.szczecin.pointofinterest.entities.images.ImagesMain
+import com.szczecin.pointofinterest.data.mapper.toArticleImages
 import io.reactivex.Single
 
 class ImageDataRepository(private val api: WikiApi) : ImageRepository {
@@ -14,7 +15,7 @@ class ImageDataRepository(private val api: WikiApi) : ImageRepository {
         const val IIURLWIDTH = "200"
     }
 
-    override fun fetchImage(title: String): Single<ImagesMain> {
-        return api.fetchImage(title, PROP, IIPROP, FORMAT, IIURLWIDTH)
+    override fun fetchImage(title: String): Single<ArticleImages> {
+        return api.fetchImage(title, PROP, IIPROP, FORMAT, IIURLWIDTH).map { it.toArticleImages() }
     }
 }

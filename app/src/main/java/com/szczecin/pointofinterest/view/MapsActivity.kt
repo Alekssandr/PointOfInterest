@@ -10,30 +10,30 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.widget.NestedScrollView
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.*
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.Polyline
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.maps.android.PolyUtil
 import com.szczecin.pointofinterest.R
 import com.szczecin.pointofinterest.adapter.ImageItemsAdapter
+import com.szczecin.pointofinterest.adapter.StepItemsAdapter
+import com.szczecin.pointofinterest.articles.model.GeoSearchPages
 import com.szczecin.pointofinterest.common.ViewModelFactory
 import com.szczecin.pointofinterest.common.lifecircle.extensions.observeLifecyclesIn
 import com.szczecin.pointofinterest.databinding.ActivityMapsBinding
-import com.szczecin.pointofinterest.entities.marker.Article
+import com.szczecin.pointofinterest.extensions.viewModel
 import com.szczecin.pointofinterest.route.model.Route
 import com.szczecin.pointofinterest.utils.MapsFactory
 import com.szczecin.pointofinterest.utils.MarkerTag
@@ -44,62 +44,74 @@ import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.bottom_sheet.*
 import javax.inject.Inject
 
-
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapsPoint,
     GoogleMap.OnMarkerClickListener {
 
-    private lateinit var mMap: GoogleMap
-
-    private lateinit var binding: ActivityMapsBinding
-
-    private lateinit var sheetBehavior: BottomSheetBehavior<NestedScrollView>
-
-    val PERMISSION_ID = 42
-    lateinit var mFusedLocationClient: FusedLocationProviderClient
-
     @Inject
     lateinit var factory: ViewModelFactory<GeoSearchViewModel>
-
     @Inject
     lateinit var factoryMarkerDetailsViewModel: ViewModelFactory<MarkerDetailsViewModel>
 
-    private val mainViewModel: GeoSearchViewModel by viewModel { factory }
+    private val geoSearchViewModel: GeoSearchViewModel by viewModel { factory }
     private val markerDescriptionViewModel: MarkerDetailsViewModel by viewModel { factoryMarkerDetailsViewModel }
+
+    private lateinit var mMap: GoogleMap
+    private lateinit var binding: ActivityMapsBinding
+    private lateinit var sheetBehavior: BottomSheetBehavior<NestedScrollView>
+    private val PERMISSION_ID = 42
+    private lateinit var mRoutePolyline: Polyline
+    lateinit var mFusedLocationClient: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
+
         super.onCreate(savedInstanceState)
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_maps)
-        binding.viewModelGeoSearch = mainViewModel
-        binding.viewModelMarkerDetails = markerDescriptionViewModel
-        observeLifecyclesIn(listOf(mainViewModel, markerDescriptionViewModel))
-        mainViewModel.setMapsPoint(this)
+        setBinding()
 
-        val mapFragment = supportFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+        observeLifecyclesIn(listOf(geoSearchViewModel, markerDescriptionViewModel))
+
+        geoSearchViewModel.setMapsPoint(this)
+
+        setMapFragment()
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        sheetBehavior = BottomSheetBehavior.from<NestedScrollView>(bottom_sheet)
-        sheetBehavior.isHideable = true
-        sheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        addSheetBehavior()
+
         initRecycler()
     }
 
+    private fun setMapFragment() {
+        val mapFragment = supportFragmentManager
+            .findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
+    }
+
+    private fun setBinding() {
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_maps)
+        binding.viewModelGeoSearch = geoSearchViewModel
+        binding.viewModelMarkerDetails = markerDescriptionViewModel
+    }
+
+    private fun addSheetBehavior() {
+        sheetBehavior = BottomSheetBehavior.from<NestedScrollView>(bottom_sheet)
+        sheetBehavior.isHideable = true
+        sheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+    }
 
     private fun expandCloseSheet() {
-        if (sheetBehavior.state == BottomSheetBehavior.STATE_HIDDEN) {
-            sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-        } else if (sheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
-            sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-        }  else if (sheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED) {
-            sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        when {
+            sheetBehavior.state == BottomSheetBehavior.STATE_HIDDEN -> sheetBehavior.state =
+                BottomSheetBehavior.STATE_COLLAPSED
+            sheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED -> sheetBehavior.state =
+                BottomSheetBehavior.STATE_COLLAPSED
+            sheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED -> sheetBehavior.state =
+                BottomSheetBehavior.STATE_EXPANDED
         }
     }
 
-    override fun addMapsPoint(point: List<Article>) {
+    override fun addMapsPoint(point: List<GeoSearchPages>) {
         point.forEach {
             val latLng = LatLng(it.lat, it.lon)
             val marker = mMap.addMarker(
@@ -107,26 +119,39 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapsPoint,
                     .position(latLng)
                     .title(it.title)
             )
-            marker.tag = MarkerTag(it.pageId,"${latLng.latitude},${latLng.longitude}")
+            marker.tag = MarkerTag(it.pageId, latLng.latitude, latLng.longitude)
         }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        getLastLocation()
         mMap.setOnMarkerClickListener(this)
+        getLastLocation()
     }
 
     override fun onMarkerClick(p0: Marker?): Boolean {
         binding.run {
             markerDescriptionViewModel.apply {
-                val markerTag = p0?.tag as MarkerTag
-                pageId.value = markerTag.id
-                markerLocation.value = markerTag.location
+                p0?.tag.let {
+                    val markerTag = it as MarkerTag
+                    pageId.value = markerTag.id
+                    markerLocation.value = "${markerTag.latitude},${markerTag.longitude}"
+                    mMap.animateCamera(
+                        MapsFactory.autoZoomCurrentLocation(
+                            LatLng(
+                                markerTag.latitude,
+                                markerTag.longitude
+                            )
+                        )
+                    )
+                }
             }
-            lifecycleOwner = this@MapsActivity
+            geoSearchViewModel.apply {
+                routeSuggestionVisibility.value = false
+            }
         }
 
+        clearMarkersAndRoute()
         expandCloseSheet()
         return true
     }
@@ -134,10 +159,69 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapsPoint,
     private fun initRecycler() {
 
         val recyclerImages = binding.bottomSheet.recyclerImages
-
         recyclerImages.apply {
             this.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             this.adapter = ImageItemsAdapter()
+        }
+
+        val recyclerRoute = binding.bottomSheet.recyclerRouteSuggestion
+        recyclerRoute.apply {
+            this.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            this.adapter = StepItemsAdapter()
+        }
+    }
+
+    private fun setUserPosition(location: Location) {
+        binding.run {
+            geoSearchViewModel.apply {
+                locationCoordinates.value = "${location.latitude}|${location.longitude}"
+            }
+            lifecycleOwner = this@MapsActivity
+        }
+        mMap.animateCamera(
+            MapsFactory.autoZoomCurrentLocation(LatLng(location.latitude, location.longitude))
+        )
+    }
+
+    private fun setMarkersAndRoute(route: Route) {
+        sheetBehavior.isHideable = false
+
+        expandCloseSheet()
+
+        val polylineOptions = MapsFactory.drawRoute(this)
+        val pointsList = PolyUtil.decode(route.overviewPolyline)
+        for (point in pointsList) {
+            polylineOptions.add(point)
+        }
+
+        mRoutePolyline = mMap.addPolyline(polylineOptions)
+
+        autoZoomLevel(route)
+    }
+
+    private fun autoZoomLevel(route: Route) {
+        mMap.animateCamera(
+            MapsFactory.autoZoomRoute(
+                LatLng(route.startLat!!, route.startLng!!),
+                LatLng(route.endLat!!, route.endLng!!)
+            )
+        )
+    }
+
+    override fun getRoute(route: Route) {
+        setMarkersAndRoute(route)
+    }
+
+    private fun clearMarkersAndRoute() {
+        if (::mRoutePolyline.isInitialized) {
+            mRoutePolyline.remove()
+        }
+    }
+
+    private val mLocationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+            val mLastLocation: Location = locationResult.lastLocation
+            setUserPosition(mLastLocation)
         }
     }
 
@@ -147,7 +231,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapsPoint,
             if (isLocationEnabled()) {
                 mMap.isMyLocationEnabled = true
                 mFusedLocationClient.lastLocation.addOnCompleteListener(this) { task ->
-                    var location: Location? = task.result
+                    val location: Location? = task.result
                     if (location == null) {
                         requestNewLocationData()
                     } else {
@@ -164,23 +248,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapsPoint,
         }
     }
 
-    private fun setUserPosition(location: Location) {
-        binding.run {
-            mainViewModel.apply {
-                locationCoordinates.value = "${location.latitude}|${location.longitude}"
-
-            }
-            lifecycleOwner = this@MapsActivity
-        }
-        val userPosition = LatLng(location.latitude, location.longitude)
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(userPosition))
-        mMap.setMinZoomPreference(14.0f)
-        mMap.setMaxZoomPreference(16.0f)
-    }
-
     @SuppressLint("MissingPermission")
     private fun requestNewLocationData() {
-        var mLocationRequest = LocationRequest()
+        val mLocationRequest = LocationRequest()
         mLocationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         mLocationRequest.interval = 0
         mLocationRequest.fastestInterval = 0
@@ -193,15 +263,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapsPoint,
         )
     }
 
-    private val mLocationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult) {
-            var mLastLocation: Location = locationResult.lastLocation
-            setUserPosition(mLastLocation)
-        }
-    }
-
     private fun isLocationEnabled(): Boolean {
-        var locationManager: LocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        var locationManager: LocationManager =
+            getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
             LocationManager.NETWORK_PROVIDER
         )
@@ -225,65 +289,23 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, MapsPoint,
     private fun requestPermissions() {
         ActivityCompat.requestPermissions(
             this,
-            arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION),
+            arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ),
             PERMISSION_ID
         )
     }
 
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         if (requestCode == PERMISSION_ID) {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 getLastLocation()
             }
         }
     }
-
-    private var mRouteMarkerList = ArrayList<Marker>()
-    private lateinit var mRoutePolyline: Polyline
-
-    private fun setMarkersAndRoute(route: Route) {
-        clearMarkersAndRoute()
-        expandCloseSheet()
-        val startLatLng = LatLng(route.startLat!!, route.startLng!!)
-        val startMarkerOptions: MarkerOptions = MarkerOptions().position(startLatLng).title(route.startName).icon(
-            BitmapDescriptorFactory.fromBitmap(MapsFactory.drawMarker(this, "S")))
-        val endLatLng = LatLng(route.endLat!!, route.endLng!!)
-        val endMarkerOptions: MarkerOptions = MarkerOptions().position(endLatLng).title(route.endName).icon(
-            BitmapDescriptorFactory.fromBitmap(MapsFactory.drawMarker(this, "E")))
-        val startMarker = mMap.addMarker(startMarkerOptions)
-        val endMarker = mMap.addMarker(endMarkerOptions)
-        mRouteMarkerList.add(startMarker)
-        mRouteMarkerList.add(endMarker)
-
-        val polylineOptions = MapsFactory.drawRoute(this)
-        val pointsList = PolyUtil.decode(route.overviewPolyline)
-        for (point in pointsList) {
-            polylineOptions.add(point)
-        }
-
-        mRoutePolyline = mMap.addPolyline(polylineOptions)
-
-        mMap.animateCamera(MapsFactory.autoZoomLevel(mRouteMarkerList))
-    }
-
-    override fun getRoute(route: Route) {
-        setMarkersAndRoute(route)
-    }
-
-    private fun clearMarkersAndRoute() {
-        for (marker in mRouteMarkerList) {
-            marker.remove()
-        }
-        mRouteMarkerList.clear()
-
-        if (::mRoutePolyline.isInitialized) {
-            mRoutePolyline.remove()
-        }
-    }
-
-    private inline fun <reified VM : ViewModel, F : ViewModelProvider.Factory> AppCompatActivity.viewModel(
-        crossinline f: () -> F
-    ): Lazy<VM> =
-        lazy { ViewModelProviders.of(this, f.invoke()).get(VM::class.java) }
 }

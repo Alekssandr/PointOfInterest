@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.szczecin.pointofinterest.R
+import com.szczecin.pointofinterest.route.model.StepsRoute
 
 
 @BindingAdapter("imgUrl")
@@ -42,5 +43,13 @@ fun TextView.loadUrl(wikiLink: String?) {
         )
         movementMethod = LinkMovementMethod.getInstance()
     }
+}
 
+@BindingAdapter("stepsList")
+fun RecyclerView.bindStepItems(items: List<StepsRoute>?) {
+
+    items?.let {
+        val adapter = adapter as StepItemsAdapter
+        adapter.update(items)
+    }
 }

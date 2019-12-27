@@ -6,6 +6,7 @@ import com.szczecin.pointofinterest.BuildConfig
 import com.szczecin.pointofinterest.articles.usecase.GetImageUseCase
 import com.szczecin.pointofinterest.articles.usecase.GetMarkerDetailsUseCase
 import com.szczecin.pointofinterest.common.rx.RxSchedulers
+import com.szczecin.pointofinterest.entities.markerDetails.Images
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
@@ -17,14 +18,14 @@ class MarkerDetailsViewModel @Inject constructor(
     private val schedulers: RxSchedulers
 ) : ViewModel(), LifecycleObserver {
 
-    private val disposables = CompositeDisposable()
     val pageId = MutableLiveData<String>()
     val markerLocation = MutableLiveData<String>()
     val title = MutableLiveData<String>()
     val description = MutableLiveData<String>()
     val imageList = MutableLiveData<List<String>>()
     val link = MutableLiveData<String>()
-    val imageArrayList = ArrayList<String>()
+
+    private val disposables = CompositeDisposable()
 
     private var imagesTitles: String = ""
 
@@ -32,7 +33,6 @@ class MarkerDetailsViewModel @Inject constructor(
     fun onCreate() {
         pageId.observeForever {
             it?.let { pageId ->
-                imageArrayList.clear()
                 loadMarkerDescription(pageId)
             }
         }
@@ -44,22 +44,18 @@ class MarkerDetailsViewModel @Inject constructor(
             .subscribeOn(schedulers.io())
             .observeOn(schedulers.mainThread())
             .subscribeBy(onSuccess = {
-                for ((_, value) in it.query.pages) {
-                    title.value = value.title
-                    description.value = value.description
-                    val url = BuildConfig.API_ARTICLE_URL + value.title.replace(" ", "_")
-                    link.value = url
-                    value.images.forEach { images ->
-                        imagesTitles = imagesTitles.plus(images.title + "|")
-                    }
-                    imagesTitles = imagesTitles.substring(0, imagesTitles.length - 1)
 
-                    loadImages(imagesTitles)
-                    imagesTitles = ""
+                title.value = it.title
+                description.value = it.description
+
+                link.value = BuildConfig.API_ARTICLE_URL + it.title.replace(" ", "_")
+                if (!it.imageUrl.isNullOrEmpty()) {
+                    loadImages(it.imageUrl.getImageTitle())
                 }
-                Log.d("test", it.query.toString())
+                imagesTitles = ""
+
             }, onError = {
-                Log.d("test", it.message ?: "")
+                Log.e("Error", it.message ?: "")
             })
     }
 
@@ -69,13 +65,17 @@ class MarkerDetailsViewModel @Inject constructor(
             .subscribeOn(schedulers.io())
             .observeOn(schedulers.mainThread())
             .subscribeBy(onSuccess = {
-                for ((_, value) in it.query.pages) {
-                    imageArrayList.add(value.imageInfo[0].thumburl)
-                }
-                imageList.value = imageArrayList
+                imageList.value = it.thumbUrlList
             }, onError = {
-                Log.d("test", it.message ?: "")
+                Log.e("Error", it.message ?: "")
             })
+    }
+
+    private fun List<String>.getImageTitle(): String {
+        forEach { title ->
+            imagesTitles = imagesTitles.plus("$title|")
+        }
+        return imagesTitles.substring(0, imagesTitles.length - 1)
     }
 
     override fun onCleared() {
