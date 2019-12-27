@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:background="@android:color/white"
         android:fillViewport="true"
-        app:behavior_peekHeight="90dp"
+        app:behavior_peekHeight="70dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,21 +36,46 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <ImageView
+                android:id="@+id/titleIcon"
+                android:layout_width="40dp"
+                android:layout_height="4dp"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/up_divider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="@string/image" />
             <TextView
                 android:id="@+id/textViewTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="20dp"
                 android:textSize="18sp"
                 android:text="@{viewModelMarkerDetails.title}"
                 android:textColor="@android:color/black"
                 android:visibility="@{viewModelGeoSearch.routeSuggestionVisibility ? View.GONE : View.VISIBLE}"
                 tools:text="Töölö Sports Hall" />
 
+            <View
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="8dp"
+                android:background="@color/up_divider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/title"
+                android:visibility="@{viewModelGeoSearch.routeSuggestionVisibility ? View.GONE : View.VISIBLE}" />
+
             <TextView
                 android:id="@+id/textViewDesc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="20dp"
@@ -62,7 +87,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_images"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="150dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 app:imageList="@{viewModelMarkerDetails.imageList}"
@@ -78,6 +103,7 @@
                 android:id="@+id/link"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:layout_marginStart="20dp"
                 android:textSize="20sp"
                 tools:text="Wikipedia"
