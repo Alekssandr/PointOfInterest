@@ -16,17 +16,31 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        resValue "string", "google_maps_key",
-                (project.findProperty("GOOGLE_MAPS_API_KEY") ?: "")
+
     }
     compileOptions {
         sourceCompatibility 1.8
         targetCompatibility 1.8
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            resValue "string", "google_maps_key",
+                    (project.findProperty("GOOGLE_MAPS_RELEASE_API_KEY") ?: "")
+            buildConfigField 'String', 'API_URL', "\"https://en.wikipedia.org/w/\""
+            buildConfigField 'String', 'API_ARTICLE_URL', "\"https://en.wikipedia.org/wiki/\""
+            buildConfigField 'String', 'API_ROUTE_URL', "\"https://maps.googleapis.com/maps/api/\""
+
+        }
+        debug {
+            minifyEnabled false
+            resValue "string", "google_maps_key",
+                    (project.findProperty("GOOGLE_MAPS_DEBUG_API_KEY") ?: "")
+            buildConfigField 'String', 'API_URL', "\"https://en.wikipedia.org/w/\""
+            buildConfigField 'String', 'API_ARTICLE_URL', "\"https://en.wikipedia.org/wiki/\""
+            buildConfigField 'String', 'API_ROUTE_URL', "\"https://maps.googleapis.com/maps/api/\""
         }
     }
 
@@ -54,7 +68,8 @@ dependencies {
     implementation appDependencies.daggerAndroid
     implementation appDependencies.glide
     implementation appDependencies.livedataext
-
+    implementation appDependencies.googleLocation
+    implementation appDependencies.coordinatorlayout
     kapt appDependencies.daggerCompiler
     kapt appDependencies.daggerAndroidProcessor
     kapt appDependencies.glideCompiler
