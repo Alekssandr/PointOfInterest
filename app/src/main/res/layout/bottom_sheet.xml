@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModelMarkerDetails"
+            type="com.szczecin.pointofinterest.viewmodel.MarkerDetailsViewModel" />
+
+        <variable
+            name="viewModelGeoSearch"
+            type="com.szczecin.pointofinterest.viewmodel.GeoSearchViewModel" />
+
+        <import type="android.view.View" />
+
+    </data>
+
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:fillViewport="true"
+        app:behavior_peekHeight="70dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/layout_bottom_sheet_scrollable_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/titleIcon"
+                android:layout_width="40dp"
+                android:layout_height="4dp"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/up_divider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="@string/image" />
+            <TextView
+                android:id="@+id/textViewTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="20dp"
+                android:textSize="18sp"
+                android:text="@{viewModelMarkerDetails.title}"
+                android:textColor="@android:color/black"
+                android:visibility="@{viewModelGeoSearch.routeSuggestionVisibility ? View.GONE : View.VISIBLE}"
+                tools:text="Töölö Sports Hall" />
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="8dp"
+                android:background="@color/up_divider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/title"
+                android:visibility="@{viewModelGeoSearch.routeSuggestionVisibility ? View.GONE : View.VISIBLE}" />
+
+            <TextView
+                android:id="@+id/textViewDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
+                android:text="@{viewModelMarkerDetails.description}"
+                android:visibility="@{viewModelGeoSearch.routeSuggestionVisibility ? View.GONE : View.VISIBLE}"
+                android:textColor="@android:color/black"
+                tools:text="Töölö Sports Hall dsdsv dsdssdfds\n dd  ddddddddd d    sd sd dsddsdsddssd sd ds ds dsdsds dssd  dsdsdsdsdsds" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_images"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                app:imageList="@{viewModelMarkerDetails.imageList}"
+                android:visibility="@{viewModelGeoSearch.routeSuggestionVisibility ? View.GONE : View.VISIBLE}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:listitem="@layout/image_item_view" />
+
+            <TextView
+                android:id="@+id/link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="20dp"
+                android:textSize="20sp"
+                tools:text="Wikipedia"
+                app:wikiLink="@{viewModelMarkerDetails.link}"
+                android:visibility="@{viewModelGeoSearch.routeSuggestionVisibility ? View.GONE : View.VISIBLE}" />
+
+            <TextView
+                android:id="@+id/direction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="40dp"
+                android:textColor="@android:color/black"
+                android:clickable="true"
+                android:onClick="@{()->viewModelGeoSearch.loadDirections(viewModelGeoSearch.locationCoordinateForDirections, viewModelMarkerDetails.markerLocation)}"
+                android:text="@string/get_there"
+                android:visibility="@{viewModelGeoSearch.routeSuggestionVisibility ? View.GONE : View.VISIBLE}"
+                android:textSize="20sp"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground"/>
+
+            <TextView
+                android:id="@+id/route_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:textColor="@android:color/black"
+                android:text="@string/route_info"
+                android:visibility="@{viewModelGeoSearch.routeSuggestionVisibility ? View.VISIBLE : View.GONE}"
+                android:textSize="18sp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_route_suggestion"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="40dp"
+                android:visibility="@{viewModelGeoSearch.routeSuggestionVisibility ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:stepsList="@{viewModelGeoSearch.routeSuggestion}"
+                tools:listitem="@layout/route_suggestion_item" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+</layout>
+
